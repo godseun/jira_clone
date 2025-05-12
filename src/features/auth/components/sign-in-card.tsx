@@ -23,23 +23,23 @@ import {
   FormMessage
 } from "@/components/ui/form"
 import Link from "next/link"
+import { loginSchema } from "../schema"
+import { useLogin } from "@/app/api/use-login"
 
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1, "Required"),
-})
 
 export const SignInCard = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { mutate } = useLogin();
+
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   })
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("Form submitted", values)
+  const onSubmit = (values: z.infer<typeof loginSchema>) => {
+    mutate({ json: values });
   }
 
   return (
